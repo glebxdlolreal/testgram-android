@@ -2607,7 +2607,7 @@ public class StoryPrivacyBottomSheet extends BottomSheet implements Notification
         return chats;
     }
 
-    private static class UserCell extends FrameLayout {
+    public static class UserCell extends FrameLayout {
 
         private final Theme.ResourcesProvider resourcesProvider;
 
@@ -2617,8 +2617,8 @@ public class StoryPrivacyBottomSheet extends BottomSheet implements Notification
         private final SimpleTextView titleTextView;
         private final SimpleTextView subtitleTextView;
 
-        private final CheckBox2 checkBox;
-        private final RadioButton radioButton;
+        public final CheckBox2 checkBox;
+        public final RadioButton radioButton;
 
         private final Paint dividerPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
@@ -2722,7 +2722,28 @@ public class StoryPrivacyBottomSheet extends BottomSheet implements Notification
 
         private boolean[] isOnline = new boolean[1];
 
+
+        public void set(Object object) {
+            if (object instanceof TLRPC.User) {
+                titleTextView.setTypeface(AndroidUtilities.getTypeface(AndroidUtilities.TYPEFACE_ROBOTO_MEDIUM));
+                titleTextView.setTranslationX(0);
+                setUser((TLRPC.User) object);
+            } else if (object instanceof TLRPC.Chat) {
+                titleTextView.setTypeface(AndroidUtilities.getTypeface(AndroidUtilities.TYPEFACE_ROBOTO_MEDIUM));
+                titleTextView.setTranslationX(0);
+                setChat((TLRPC.Chat) object, 0);
+            } else if (object instanceof String) {
+                titleTextView.setTypeface(null);
+                titleTextView.setTranslationX(-dp(52) * (LocaleController.isRTL ? -1 : 1));
+                titleTextView.setText((String) object);
+            }
+        }
+
+        public long dialogId;
+
         public void setUser(TLRPC.User user) {
+            dialogId = user == null ? 0 : user.id;
+
             avatarDrawable.setInfo(user);
             imageView.setRoundRadius(dp(20));
             imageView.setForUserOrChat(user, avatarDrawable);
@@ -2745,6 +2766,8 @@ public class StoryPrivacyBottomSheet extends BottomSheet implements Notification
         }
 
         public void setChat(TLRPC.Chat chat, int participants_count) {
+            dialogId = chat == null ? 0 : -chat.id;
+
             avatarDrawable.setInfo(chat);
             imageView.setRoundRadius(dp(ChatObject.isForum(chat) ? 12 : 20));
             imageView.setForUserOrChat(chat, avatarDrawable);
@@ -3632,7 +3655,7 @@ public class StoryPrivacyBottomSheet extends BottomSheet implements Notification
                 for (int i = 0; i < allowUsers.users.size(); ++i) {
                     long userId = allowUsers.users.get(i);
                     TLRPC.InputUser inputUser = messagesController.getInputUser(userId);
-                    if (!(inputUser instanceof TLRPC.TL_inputUserEmpty)) {
+                    if (inputUser != null && !(inputUser instanceof TLRPC.TL_inputUserEmpty)) {
                         rule.users.add(inputUser);
                         selectedUserIds.add(userId);
                         selectedInputUsers.add(inputUser);
@@ -4017,7 +4040,14 @@ public class StoryPrivacyBottomSheet extends BottomSheet implements Notification
             } else if (type == TYPE_CLOSE_FRIENDS) {
                 return user.close_friend;
             } else if (type == TYPE_SELECTED_CONTACTS) {
-                return selectedUserIds.contains(user.id);
+                if (selectedUserIds.contains(user.id)) {
+                    return true;
+                }
+                for (ArrayList<Long> userIds : selectedUserIdsByGroup.values()) {
+                    if (userIds.contains(user.id)) {
+                        return true;
+                    }
+                }
             }
             return false;
         }

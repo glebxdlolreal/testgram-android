@@ -572,11 +572,22 @@ public class TopicsFragment extends BaseFragment implements NotificationCenter.N
                             bottomSheet.setDelegate((users1, fwdCount) -> {
                                 int N = users1.size();
                                 int[] finished = new int[1];
+                                TLRPC.TL_messages_invitedUsers totalInvitedUsers = new TLRPC.TL_messages_invitedUsers();
+                                totalInvitedUsers.updates = new TLRPC.TL_updates();
                                 for (int a = 0; a < N; a++) {
                                     TLRPC.User user = users1.get(a);
-                                    getMessagesController().addUserToChat(chatId, user, fwdCount, null, TopicsFragment.this, () -> {
-                                        if (++finished[0] == N) {
-                                            BulletinFactory.of(TopicsFragment.this).createUsersAddedBulletin(users1, getMessagesController().getChat(chatId)).show();
+                                    getMessagesController().addUserToChat(chatId, user, fwdCount, null, TopicsFragment.this, false, () -> {}, null, invitedUsers -> {
+                                        if (invitedUsers != null) {
+                                            totalInvitedUsers.missing_invitees.addAll(invitedUsers.missing_invitees);
+                                        }
+                                        finished[0]++;
+                                        if (finished[0] == N) {
+                                            if (totalInvitedUsers.missing_invitees.isEmpty()) {
+                                                BulletinFactory.of(TopicsFragment.this).createUsersAddedBulletin(users1, getMessagesController().getChat(chatId)).show();
+                                            } else {
+                                                TLRPC.Chat chat = getMessagesController().getChat(chatId);
+                                                AlertsCreator.checkRestrictedInviteUsers(currentAccount, chat, totalInvitedUsers);
+                                            }
                                         }
                                     });
                                 }
@@ -752,6 +763,8 @@ public class TopicsFragment extends BaseFragment implements NotificationCenter.N
         avatarContainer = new ChatAvatarContainer(context, this, false);
         avatarContainer.getAvatarImageView().setRoundRadius(AndroidUtilities.dp(16));
         avatarContainer.setOccupyStatusBar(!AndroidUtilities.isTablet() && !inPreviewMode);
+        avatarContainer.allowDrawStories = getDialogId() < 0;
+        avatarContainer.setClipChildren(false);
         actionBar.addView(avatarContainer, 0, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.MATCH_PARENT, Gravity.TOP | Gravity.LEFT, 56, 0, 86, 0));
 
         avatarContainer.getAvatarImageView().setOnClickListener(new View.OnClickListener() {
@@ -2543,6 +2556,7 @@ public class TopicsFragment extends BaseFragment implements NotificationCenter.N
     @Override
     public boolean onFragmentCreate() {
         getMessagesController().loadFullChat(chatId, 0, true);
+        NotificationCenter.getInstance(currentAccount).addObserver(this, NotificationCenter.storiesUpdated);
         NotificationCenter.getInstance(currentAccount).addObserver(this, NotificationCenter.chatWasBoostedByUser);
         NotificationCenter.getInstance(currentAccount).addObserver(this, NotificationCenter.chatInfoDidLoad);
         NotificationCenter.getInstance(currentAccount).addObserver(this, NotificationCenter.topicsDidLoaded);
@@ -2581,6 +2595,7 @@ public class TopicsFragment extends BaseFragment implements NotificationCenter.N
     @Override
     public void onFragmentDestroy() {
         notificationsLocker.unlock();
+        NotificationCenter.getInstance(currentAccount).removeObserver(this, NotificationCenter.storiesUpdated);
         NotificationCenter.getInstance(currentAccount).removeObserver(this, NotificationCenter.chatWasBoostedByUser);
         NotificationCenter.getInstance(currentAccount).removeObserver(this, NotificationCenter.chatInfoDidLoad);
         NotificationCenter.getInstance(currentAccount).removeObserver(this, NotificationCenter.topicsDidLoaded);
@@ -2671,6 +2686,8 @@ public class TopicsFragment extends BaseFragment implements NotificationCenter.N
                     pendingRequestsDelegate.setChatInfo(chatFull, true);
                 }
             }
+        } else if (id == NotificationCenter.storiesUpdated) {
+            updateChatInfo();
         } else if (id == NotificationCenter.chatWasBoostedByUser) {
             if (chatId == -(long) args[2]) {
                 boostsStatus = (TL_stories.TL_premium_boostsStatus) args[0];

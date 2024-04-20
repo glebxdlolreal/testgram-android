@@ -679,6 +679,50 @@ public class FileLoader extends BaseController {
         }
     }
 
+    public FileUploadOperation findUploadOperationByRequestToken(final int requestToken) {
+        for (FileUploadOperation operation : uploadOperationPaths.values()) {
+            if (operation == null) continue;
+            for (int i = 0; i < operation.requestTokens.size(); ++i) {
+                if (operation.requestTokens.valueAt(i) == requestToken) {
+                    return operation;
+                }
+            }
+        }
+        return null;
+    }
+
+    public boolean checkUploadCaughtPremiumFloodWait(final String filename) {
+        if (filename == null) return false;
+        FileUploadOperation operation = uploadOperationPaths.get(filename);
+        if (operation != null && operation.caughtPremiumFloodWait) {
+            operation.caughtPremiumFloodWait = false;
+            return true;
+        }
+        return false;
+    }
+
+    public FileLoadOperation findLoadOperationByRequestToken(final int requestToken) {
+        for (FileLoadOperation operation : loadOperationPaths.values()) {
+            if (operation == null || operation.requestInfos == null) continue;
+            for (FileLoadOperation.RequestInfo requestInfo : operation.requestInfos) {
+                if (requestInfo.requestToken == requestToken) {
+                    return operation;
+                }
+            }
+        }
+        return null;
+    }
+
+    public boolean checkLoadCaughtPremiumFloodWait(final String filename) {
+        if (filename == null) return false;
+        FileLoadOperation operation = loadOperationPaths.get(filename);
+        if (operation != null && operation.caughtPremiumFloodWait) {
+            operation.caughtPremiumFloodWait = false;
+            return true;
+        }
+        return false;
+    }
+
     public boolean isLoadingFile(final String fileName) {
         return fileName != null && loadOperationPathsUI.containsKey(fileName);
     }
@@ -727,7 +771,7 @@ public class FileLoader extends BaseController {
     }
 
 
-    private FileLoadOperation loadFileInternal(final TLRPC.Document document, final SecureDocument secureDocument, final WebFile webDocument, TLRPC.TL_fileLocationToBeDeprecated location, final ImageLocation imageLocation, Object parentObject, final String locationExt, final long locationSize, int priority, final FileLoadOperationStream stream, final long streamOffset, boolean streamPriority, final int cacheType) {
+    private FileLoadOperation loadFileInternal(final TLRPC.Document document, final SecureDocument secureDocument, final WebFile webDocument, TLRPC.TL_fileLocationToBeDeprecated location, final ImageLocation imageLocation, Object parentObject, final String locationExt, final long locationSize, int priority, FileLoadOperationStream stream, final long streamOffset, boolean streamPriority, final int cacheType) {
         String fileName;
         if (location != null) {
             fileName = getAttachFileName(location, locationExt);
@@ -976,6 +1020,9 @@ public class FileLoader extends BaseController {
 
         loadOperationPaths.put(finalFileName, operation);
         operation.setPriority(priority);
+        if (stream == null) {
+            stream = FileStreamLoadOperation.allStreams.get(documentId);
+        }
         if (stream != null) {
             operation.setStream(stream, streamPriority, streamOffset);
         }
@@ -984,7 +1031,7 @@ public class FileLoader extends BaseController {
         loaderQueue.checkLoadingOperations(operation.isStory && priority >= FileLoaderPriorityQueue.PRIORITY_VALUE_MAX);
 
         if (BuildVars.LOGS_ENABLED) {
-            FileLog.d("create load operation fileName=" + finalFileName + " documentName=" + getDocumentFileName(document) + " size=" + AndroidUtilities.formatFileSize(operation.totalBytesCount) + " position in queue " + operation.getPositionInQueue() + " account=" + currentAccount + " cacheType=" + cacheType + " priority=" + operation.getPriority());
+            FileLog.d("create load operation fileName=" + finalFileName + " documentName=" + getDocumentFileName(document) + " size=" + AndroidUtilities.formatFileSize(operation.totalBytesCount) + " position in queue " + operation.getPositionInQueue() + " account=" + currentAccount + " cacheType=" + cacheType + " priority=" + operation.getPriority() + " stream=" + stream);
         }
         return operation;
     }
