@@ -64033,7 +64033,7 @@ public class TLRPC {
     }
 
     public static class TL_channels_inviteToChannel extends TLObject {
-        public static final int constructor = 0x199f3a6c;
+        public static final int constructor = 0xc9e33d54;
 
         public InputChannel channel;
         public ArrayList<InputUser> users = new ArrayList<>();
