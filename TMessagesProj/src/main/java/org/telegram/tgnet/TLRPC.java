@@ -59053,7 +59053,7 @@ public class TLRPC {
     }
 
     public static class TL_messages_addChatUser extends TLObject {
-        public static final int constructor = 0xf24753e3;
+        public static final int constructor = 0xcbc6d107;
 
         public long chat_id;
         public InputUser user_id;
@@ -59093,7 +59093,7 @@ public class TLRPC {
     }
 
     public static class TL_messages_createChat extends TLObject {
-        public static final int constructor = 0x34a818;
+        public static final int constructor = 0x92ceddd4;
 
         public int flags;
         public ArrayList<InputUser> users = new ArrayList<>();
