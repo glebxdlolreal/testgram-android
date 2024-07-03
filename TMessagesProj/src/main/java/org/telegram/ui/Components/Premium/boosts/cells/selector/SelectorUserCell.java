@@ -4,7 +4,6 @@ import static org.telegram.messenger.AndroidUtilities.dp;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.view.Gravity;
@@ -43,7 +42,7 @@ public class SelectorUserCell extends BaseCell {
     public SelectorUserCell(Context context, Theme.ResourcesProvider resourcesProvider, boolean isGreen) {
         super(context, resourcesProvider);
         statusBadgeComponent = new StatusBadgeComponent(this);
-        titleTextView.setTypeface(AndroidUtilities.getTypeface(AndroidUtilities.TYPEFACE_ROBOTO_MEDIUM));
+        titleTextView.setTypeface(AndroidUtilities.bold());
         radioButton.setVisibility(View.GONE);
         checkBox = new CheckBox2(context, 21, resourcesProvider);
         if (isGreen) {
@@ -169,7 +168,7 @@ public class SelectorUserCell extends BaseCell {
         titleTextView.setText(chat.title);
 
         subtitleTextView.setTextColor(Theme.getColor(Theme.key_dialogTextGray3, resourcesProvider));
-        setSubtitle(LocaleController.formatString("BoostExpireOn", R.string.BoostExpireOn, LocaleController.getInstance().formatterBoostExpired.format(new Date(boost.expires * 1000L))));
+        setSubtitle(LocaleController.formatString("BoostExpireOn", R.string.BoostExpireOn, LocaleController.getInstance().getFormatterBoostExpired().format(new Date(boost.expires * 1000L))));
 
         if (boost.cooldown_until_date > 0) {
             long diff = boost.cooldown_until_date * 1000L - System.currentTimeMillis();
@@ -192,7 +191,7 @@ public class SelectorUserCell extends BaseCell {
             subtitleTextView.setAlpha(0.65f);
             setCheckboxAlpha(0.3f, false);
         } else {
-            setSubtitle(LocaleController.formatString("BoostExpireOn", R.string.BoostExpireOn, LocaleController.getInstance().formatterBoostExpired.format(new Date(boost.expires * 1000L))));
+            setSubtitle(LocaleController.formatString("BoostExpireOn", R.string.BoostExpireOn, LocaleController.getInstance().getFormatterBoostExpired().format(new Date(boost.expires * 1000L))));
             if (titleTextView.getAlpha() < 1f) {
                 titleTextView.animate().alpha(1f).start();
                 subtitleTextView.animate().alpha(1f).start();

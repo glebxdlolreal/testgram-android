@@ -77,7 +77,6 @@ import org.telegram.messenger.SendMessagesHelper;
 import org.telegram.messenger.SharedConfig;
 import org.telegram.messenger.Utilities;
 import org.telegram.messenger.camera.CameraController;
-import org.telegram.messenger.camera.CameraSession;
 import org.telegram.messenger.camera.CameraSessionWrapper;
 import org.telegram.messenger.camera.CameraView;
 import org.telegram.messenger.camera.Size;
@@ -189,7 +188,7 @@ public class CameraScanActivity extends BaseFragment {
         if (parentActivity == null) {
             return null;
         }
-        INavigationLayout[] actionBarLayout = new INavigationLayout[]{INavigationLayout.newLayout(parentActivity)};
+        INavigationLayout[] actionBarLayout = new INavigationLayout[]{INavigationLayout.newLayout(parentActivity, false)};
         BottomSheet bottomSheet = new BottomSheet(parentActivity, false) {
             CameraScanActivity fragment;
             {
@@ -642,7 +641,7 @@ public class CameraScanActivity extends BaseFragment {
                             index1 += 1;
                             index2 += 1;
                             spanned.setSpan(new URLSpanNoUnderline(links[i], true), index1, index2 - 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                            spanned.setSpan(new TypefaceSpan(AndroidUtilities.getTypeface("fonts/rmedium.ttf")), index1, index2 - 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            spanned.setSpan(new TypefaceSpan(AndroidUtilities.bold()), index1, index2 - 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                         } else {
                             break;
                         }

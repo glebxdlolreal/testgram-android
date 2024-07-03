@@ -131,7 +131,7 @@ public class UserCell extends FrameLayout implements NotificationCenter.Notifica
             addButton.setGravity(Gravity.CENTER);
             addButton.setTextColor(Theme.getColor(Theme.key_featuredStickers_buttonText, resourcesProvider));
             addButton.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
-            addButton.setTypeface(AndroidUtilities.getTypeface("fonts/rmedium.ttf"));
+            addButton.setTypeface(AndroidUtilities.bold());
             addButton.setBackgroundDrawable(Theme.AdaptiveRipple.filledRectByKey(Theme.key_featuredStickers_addButton, 4));
             addButton.setText(LocaleController.getString("Add", R.string.Add));
             addButton.setPadding(AndroidUtilities.dp(17), 0, AndroidUtilities.dp(17), 0);
@@ -171,7 +171,7 @@ public class UserCell extends FrameLayout implements NotificationCenter.Notifica
 
         nameTextView = new SimpleTextView(context);
         nameTextView.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText, resourcesProvider));
-        nameTextView.setTypeface(AndroidUtilities.getTypeface("fonts/rmedium.ttf"));
+        nameTextView.setTypeface(AndroidUtilities.bold());
         nameTextView.setTextSize(16);
         nameTextView.setGravity((LocaleController.isRTL ? Gravity.RIGHT : Gravity.LEFT) | Gravity.TOP);
         addView(nameTextView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 20, (LocaleController.isRTL ? Gravity.RIGHT : Gravity.LEFT) | Gravity.TOP, LocaleController.isRTL ? 28 + (checkbox == 2 ? 18 : 0) + additionalPadding : (64 + padding), 10, LocaleController.isRTL ? (64 + padding) : 28 + (checkbox == 2 ? 18 : 0) + additionalPadding, 0));
@@ -466,9 +466,9 @@ public class UserCell extends FrameLayout implements NotificationCenter.Notifica
             }
             if (!continueUpdate && currentName == null && lastName != null && (mask & MessagesController.UPDATE_MASK_NAME) != 0) {
                 if (currentUser != null) {
-                    newName = UserObject.getUserName(currentUser);
+                    newName = AndroidUtilities.removeDiacritics(UserObject.getUserName(currentUser));
                 } else {
-                    newName = currentChat.title;
+                    newName = AndroidUtilities.removeDiacritics(currentChat == null ? "" : currentChat.title);
                 }
                 if (!newName.equals(lastName)) {
                     continueUpdate = true;
@@ -547,9 +547,9 @@ public class UserCell extends FrameLayout implements NotificationCenter.Notifica
             nameTextView.setText(currentName);
         } else {
             if (currentUser != null) {
-                lastName = newName == null ? UserObject.getUserName(currentUser) : newName;
+                lastName = AndroidUtilities.removeDiacritics(newName == null ? UserObject.getUserName(currentUser) : newName);
             } else if (currentChat != null) {
-                lastName = newName == null ? currentChat.title : newName;
+                lastName = AndroidUtilities.removeDiacritics(newName == null ? currentChat.title : newName);
             } else {
                 lastName = "";
             }
