@@ -30,6 +30,8 @@ public class NotificationCenter {
     public static final int updateInterfaces = totalEvents++;
     public static final int dialogsNeedReload = totalEvents++;
     public static final int closeChats = totalEvents++;
+    public static final int closeChatActivity = totalEvents++;
+    public static final int closeProfileActivity = totalEvents++;
     public static final int messagesDeleted = totalEvents++;
     public static final int historyCleared = totalEvents++;
     public static final int messagesRead = totalEvents++;
@@ -275,6 +277,9 @@ public class NotificationCenter {
     public static final int appConfigUpdated = totalEvents++;
     public static final int conferenceEmojiUpdated = totalEvents++;
     public static final int contentSettingsLoaded = totalEvents++;
+    public static final int musicListLoaded = totalEvents++;
+    public static final int musicIdsLoaded = totalEvents++;
+    public static final int profileMusicUpdated = totalEvents++;
 
     //global
     public static final int pushMessagesUpdated = totalEvents++;
@@ -359,6 +364,9 @@ public class NotificationCenter {
     public static final int nearEarEvent = totalEvents++;
     public static final int translationModelDownloading = totalEvents++;
     public static final int translationModelDownloaded = totalEvents++;
+    public static final int botForumTopicDidCreate = totalEvents++;
+    public static final int botForumDraftUpdate = totalEvents++;
+    public static final int botForumDraftDelete = totalEvents++;
 
     public static boolean alreadyLogged;
 
@@ -558,7 +566,7 @@ public class NotificationCenter {
     }
 
     public void postNotificationName(final int id, Object... args) {
-        boolean allowDuringAnimation = id == startAllHeavyOperations || id == stopAllHeavyOperations || id == didReplacedPhotoInMemCache || id == closeChats || id == invalidateMotionBackground || id == needCheckSystemBarColors;
+        boolean allowDuringAnimation = id == startAllHeavyOperations || id == stopAllHeavyOperations || id == didReplacedPhotoInMemCache || id == closeChats || id == invalidateMotionBackground || id == needCheckSystemBarColors || id == messageReceivedByServer2;
         ArrayList<Integer> expiredIndices = null;
         if (!allowDuringAnimation && allowedNotifications.size() > 0) {
             int size = allowedNotifications.size();

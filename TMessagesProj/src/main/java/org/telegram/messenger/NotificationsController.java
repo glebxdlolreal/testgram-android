@@ -2018,6 +2018,8 @@ public class NotificationsController extends BaseController {
                         return messageObject.messageText.toString();
                     } else if (messageObject.messageOwner.action instanceof TLRPC.TL_messageActionGiveawayResults) {
                         return messageObject.messageText.toString();
+                    } else if (messageObject.messageOwner.action instanceof TLRPC.TL_messageActionSuggestBirthday) {
+                        return messageObject.messageText.toString();
                     } else if (messageObject.messageOwner.action instanceof TLRPC.TL_messageActionPinMessage) {
                         if (chat != null && (!ChatObject.isChannel(chat) || chat.megagroup)) {
                             if (messageObject.replyMessageObject == null) {
@@ -2246,11 +2248,11 @@ public class NotificationsController extends BaseController {
                             }
                         }
                     } else if (messageObject.messageOwner.action instanceof TLRPC.TL_messageActionSetChatTheme) {
-                        String emoticon = ((TLRPC.TL_messageActionSetChatTheme) messageObject.messageOwner.action).emoticon;
+                        String emoticon = TlUtils.getThemeEmoticonOrGiftTitle(((TLRPC.TL_messageActionSetChatTheme) messageObject.messageOwner.action).theme);
                         if (TextUtils.isEmpty(emoticon)) {
                             msg = dialogId == selfUsedId
                                     ? LocaleController.formatString(R.string.ChatThemeDisabledYou)
-                                    : LocaleController.formatString("ChatThemeDisabled", R.string.ChatThemeDisabled, name, emoticon);
+                                    : LocaleController.formatString(R.string.ChatThemeDisabled, name, emoticon);
                         } else {
                             msg = dialogId == selfUsedId
                                     ? LocaleController.formatString(R.string.ChatThemeChangedYou, emoticon)
@@ -2538,6 +2540,8 @@ public class NotificationsController extends BaseController {
                             msg = messageObject.messageText.toString();
                         } else if (messageObject.messageOwner.action instanceof TLRPC.TL_messageActionStarGiftUnique) {
                             msg = messageObject.messageText.toString();
+                        } else if (messageObject.messageOwner.action instanceof TLRPC.TL_messageActionSuggestBirthday) {
+                            msg = messageObject.messageText.toString();
                         } else if (messageObject.messageOwner.action instanceof TLRPC.TL_messageActionPaidMessagesRefunded || messageObject.messageOwner.action instanceof TLRPC.TL_messageActionPaidMessagesPrice) {
                             msg = messageObject.messageText.toString();
                         } else if (messageObject.messageOwner.action instanceof TLRPC.TL_messageActionPhoneCall) {
@@ -2553,7 +2557,7 @@ public class NotificationsController extends BaseController {
                                 msg = LocaleController.getString(R.string.CallMessageIncomingConferenceMissed);
                             }
                         } else if (messageObject.messageOwner.action instanceof TLRPC.TL_messageActionSetChatTheme) {
-                            String emoticon = ((TLRPC.TL_messageActionSetChatTheme) messageObject.messageOwner.action).emoticon;
+                            String emoticon = TlUtils.getThemeEmoticonOrGiftTitle(((TLRPC.TL_messageActionSetChatTheme) messageObject.messageOwner.action).theme);
                             if (TextUtils.isEmpty(emoticon)) {
                                 msg = dialogId == selfUsedId
                                         ? LocaleController.formatString(R.string.ChatThemeDisabledYou)
@@ -2957,7 +2961,7 @@ public class NotificationsController extends BaseController {
                         } else if (messageObject.messageOwner.action instanceof TLRPC.TL_messageActionGameScore) {
                             msg = messageObject.messageText.toString();
                         } else if (messageObject.messageOwner.action instanceof TLRPC.TL_messageActionSetChatTheme) {
-                            String emoticon = ((TLRPC.TL_messageActionSetChatTheme) messageObject.messageOwner.action).emoticon;
+                            String emoticon = TlUtils.getThemeEmoticonOrGiftTitle(((TLRPC.TL_messageActionSetChatTheme) messageObject.messageOwner.action).theme);
                             if (TextUtils.isEmpty(emoticon)) {
                                 msg = dialogId == selfUsedId
                                         ? LocaleController.formatString(R.string.ChatThemeDisabledYou)

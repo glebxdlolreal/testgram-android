@@ -2663,6 +2663,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
         public boolean allowTakeAnimation = true;
         public boolean canEdit;
         public int starOffset;
+        public boolean fadeIn;
     }
 
     public static class EmptyPhotoViewerProvider implements PhotoViewerProvider {
@@ -4798,11 +4799,11 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
                 }
             }
         };
-        windowView.setBackgroundDrawable(backgroundDrawable);
+        windowView.setBackground(backgroundDrawable);
         windowView.setFocusable(false);
 
         animatingImageView = new ClippingImageView(activity);
-        animatingImageView.setAnimationValues(animationValues);
+        animatingImageView.setAnimationValues(animationValues, false, false);
         windowView.addView(animatingImageView, LayoutHelper.createFrame(40, 40));
 
         containerView = new FrameLayoutDrawer(activity, activity) {
@@ -14721,7 +14722,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
                             compressItem.setVisibility(View.GONE);
                         } else {
                             showVideoTimeline(true, animated);
-                            if (sendPhotoType != SELECT_TYPE_AVATAR) {
+                            if (sendPhotoType != SELECT_TYPE_AVATAR && sendPhotoType != SELECT_TYPE_STICKER) {
                                 videoAvatarTooltip.setVisibility(View.GONE);
                                 cropItem.setVisibility(View.VISIBLE);
                                 cropItem.setTag(1);
@@ -14766,7 +14767,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
                     isCurrentVideo = false;
                     if (object instanceof MediaController.PhotoEntry && !((MediaController.PhotoEntry) object).isVideo) {
                         final MediaController.PhotoEntry entry = (MediaController.PhotoEntry) object;
-                        if (!entry.isVideo && (currentIndex == index ? getCurrentVideoEditedInfo() : entry.editedInfo) == null) {
+                        if (!entry.isVideo && sendPhotoType != SELECT_TYPE_STICKER && (currentIndex == index ? getCurrentVideoEditedInfo() : entry.editedInfo) == null) {
                             compressItem.setVisibility(View.VISIBLE);
                             compressItem.setPhotoState(highQuality);
                         } else {
@@ -17191,7 +17192,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
             clippingImageProgress = 1f;
 
             for (int i = 0; i < animatingImageViews.length; i++) {
-                animatingImageViews[i].setAnimationValues(animationValues);
+                animatingImageViews[i].setAnimationValues(animationValues, true, object.fadeIn);
                 animatingImageViews[i].setVisibility(View.VISIBLE);
                 animatingImageViews[i].setRadius(object.radius);
                 animatingImageViews[i].setOrientation(orientation,  object.imageReceiver.getInvert());
@@ -17214,7 +17215,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
             }
 
             for (int i = 0; i < animatingImageViews.length; i++) {
-                if (animatingImageViews.length > 1) {
+                if (animatingImageViews.length > 1 || object.fadeIn) {
                     animatingImageViews[i].setAlpha(0.0f);
                 } else {
                     animatingImageViews[i].setAlpha(1.0f);
@@ -17871,7 +17872,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
                 final ClippingImageView[] animatingImageViews = getAnimatingImageViews(object);
 
                 for (int i = 0; i < animatingImageViews.length; i++) {
-                    animatingImageViews[i].setAnimationValues(animationValues);
+                    animatingImageViews[i].setAnimationValues(animationValues, false, object == null ? false : object.fadeIn);
                     animatingImageViews[i].setVisibility(View.VISIBLE);
                 }
 
