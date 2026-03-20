@@ -257,6 +257,16 @@ public class ConnectionsManager extends BaseController {
         } else {
             mainPreferences = ApplicationLoader.applicationContext.getSharedPreferences("mainconfig" + currentAccount, Activity.MODE_PRIVATE);
         }
+        
+        // Force reset DC cache on first launch of new build
+        int lastBuildVersion = mainPreferences.getInt("lastBuildVersion", 0);
+        if (lastBuildVersion != SharedConfig.buildVersion()) {
+            mainPreferences.edit().clear().putInt("lastBuildVersion", SharedConfig.buildVersion()).apply();
+            if (BuildVars.LOGS_ENABLED) {
+                FileLog.d("ConnectionsManager: DC cache cleared for new build " + SharedConfig.buildVersion());
+            }
+        }
+        
         forceTryIpV6 = mainPreferences.getBoolean("forceTryIpV6", false);
         boolean userPremium = false;
         if (getUserConfig().getCurrentUser() != null) {
