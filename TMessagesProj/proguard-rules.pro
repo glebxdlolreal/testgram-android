@@ -106,4 +106,6 @@
 
 # Use -keep to explicitly keep any other classes shrinking would remove
 -dontoptimize
--dontobfuscate
+-dontobfuscate-keep class org.telegram.ui.Components.UpdateAppAlertDialog { *; }
+-keep class org.telegram.ui.Components.UpdateLayout { *; }
+-keep class org.telegram.messenger.BetaUpdaterController { *; }
