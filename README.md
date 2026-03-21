@@ -2,20 +2,6 @@
 
 Android client for [Testgram](https://github.com/glebxdlolreal/testgram) — a self-hosted Telegram-compatible server.
 
-## Download
-
-Latest APK: [testgram.apk](https://testgram.b2t.pro/testgram.apk)
-
-## Features
-
-- Full Telegram API Layer 222
-- Passkey (WebAuthn) login
-- Telegram Stars — balance, transactions, gift purchases
-- Star Gifts — send, convert, collections
-- Direct Messages (Monoforum) — DMs for channels
-- Channel reactions — counts shown without revealing who reacted
-- Auto-update via `help.getAppUpdate`
-
 ## Building
 
 You will need Android Studio, Android NDK, and Android SDK.
