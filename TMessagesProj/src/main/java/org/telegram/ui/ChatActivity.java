@@ -18883,8 +18883,8 @@ public class ChatActivity extends BaseFragment implements
                     forwardButtonAnimation = new AnimatorSet();
                     ArrayList<Animator> animators = new ArrayList<>();
                     if (forwardItem != null) {
-                        forwardItem.setEnabled(cantForwardMessagesCount == 0 || noforwards);
-                        animators.add(ObjectAnimator.ofFloat(forwardItem, View.ALPHA, cantForwardMessagesCount == 0 ? 1.0f : 0.5f));
+                        forwardItem.setEnabled(cantForwardMessagesCount == 0 && !noforwards);
+                        animators.add(ObjectAnimator.ofFloat(forwardItem, View.ALPHA, cantForwardMessagesCount == 0 && !noforwards ? 1.0f : 0.5f));
 
                         if (noforwards && forwardItem.getBackground() != null) {
                             forwardItem.setBackground(null);
@@ -18893,7 +18893,7 @@ public class ChatActivity extends BaseFragment implements
                         }
                     }
                     if (actionsButtonsLayout != null) {
-                        actionsButtonsLayout.setForwardButtonEnabled(cantForwardMessagesCount == 0 || noforwards, true);
+                        actionsButtonsLayout.setForwardButtonEnabled(cantForwardMessagesCount == 0 && !noforwards, true);
                     }
                     forwardButtonAnimation.playTogether(animators);
                     forwardButtonAnimation.setDuration(100);
@@ -18906,15 +18906,15 @@ public class ChatActivity extends BaseFragment implements
                     forwardButtonAnimation.start();
                 } else {
                     if (forwardItem != null) {
-                        forwardItem.setEnabled(cantForwardMessagesCount == 0 || noforwards);
-                        forwardItem.setAlpha(cantForwardMessagesCount == 0 ? 1.0f : 0.5f);
+                        forwardItem.setEnabled(cantForwardMessagesCount == 0 && !noforwards);
+                        forwardItem.setAlpha(cantForwardMessagesCount == 0 && !noforwards ? 1.0f : 0.5f);
                         if (noforwards) {
                         } else if (forwardItem.getBackground() == null) {
                             forwardItem.setBackground(Theme.createSelectorDrawable(getThemedColor(Theme.key_actionBarActionModeDefaultSelector), 3));
                         }
                     }
                     if (actionsButtonsLayout != null) {
-                        actionsButtonsLayout.setForwardButtonEnabled(cantForwardMessagesCount == 0 || noforwards, false);
+                        actionsButtonsLayout.setForwardButtonEnabled(cantForwardMessagesCount == 0 && !noforwards, false);
                     }
                 }
                 if (saveItem != null) {
