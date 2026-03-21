@@ -2430,6 +2430,12 @@ public class SendMessagesHelper extends BaseController implements NotificationCe
                         if (channel != null) {
                             req.from_peer.access_hash = channel.access_hash;
                         }
+                    } else if (msgObj.messageOwner.peer_id instanceof TLRPC.TL_peerUser) {
+                        TLRPC.User user = getMessagesController().getUser(msgObj.messageOwner.peer_id.user_id);
+                        req.from_peer = getMessagesController().getInputPeer(msgObj.messageOwner.peer_id.user_id);
+                    } else if (msgObj.messageOwner.peer_id instanceof TLRPC.TL_peerChat) {
+                        req.from_peer = new TLRPC.TL_inputPeerChat();
+                        req.from_peer.chat_id = msgObj.messageOwner.peer_id.chat_id;
                     } else {
                         req.from_peer = new TLRPC.TL_inputPeerEmpty();
                     }
@@ -2627,13 +2633,11 @@ public class SendMessagesHelper extends BaseController implements NotificationCe
                         send2.run();
                     }
 
-                    if (a != messages.size() - 1) {
-                        objArr = new ArrayList<>();
-                        arr = new ArrayList<>();
-                        randomIds = new ArrayList<>();
-                        ids = new ArrayList<>();
-                        messagesByRandomIds = new LongSparseArray<>();
-                    }
+                    objArr = new ArrayList<>();
+                    arr = new ArrayList<>();
+                    randomIds = new ArrayList<>();
+                    ids = new ArrayList<>();
+                    messagesByRandomIds = new LongSparseArray<>();
                 }
             }
         } else {

@@ -56248,7 +56248,7 @@ public class TLRPC {
     }
 
     public static class TL_messages_forwardMessages extends TLObject {
-        public static final int constructor = 0x41d41ade;
+        public static final int constructor = 0x13704a7c;
 
         public int flags;
         public boolean silent;
