@@ -4632,8 +4632,8 @@ public class StarGiftSheet extends BottomSheetWithRecyclerListView implements No
                 sb.setSpan(upgradeIconSpan, 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 sb.append(
                     savedStarGift.upgrade_stars > 0 ?
-                        getString(R.string.Gift2UpgradeButtonFree) :
-                        getString(R.string.Gift2UpgradeButtonGift)
+                        getString(R.string.Gift2UpgradeButtonGift) :
+                        getString(R.string.Gift2UpgradeButtonFree)
                 );
                 button.setFilled(true);
                 button.setText(sb, !firstSet);
@@ -4986,8 +4986,8 @@ public class StarGiftSheet extends BottomSheetWithRecyclerListView implements No
                 sb.setSpan(upgradeIconSpan, 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 sb.append(
                     upgrade_stars > 0 ?
-                        getString(R.string.Gift2UpgradeButtonFree) :
-                        getString(R.string.Gift2UpgradeButtonGift)
+                        getString(R.string.Gift2UpgradeButtonGift) :
+                        getString(R.string.Gift2UpgradeButtonFree)
                 );
                 button.setFilled(true);
                 button.setText(sb, !firstSet);
