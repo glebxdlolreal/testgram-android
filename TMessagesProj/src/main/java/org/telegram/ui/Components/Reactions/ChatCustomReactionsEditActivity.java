@@ -313,7 +313,7 @@ public class ChatCustomReactionsEditActivity extends BaseFragment implements Not
         infoCell3.setText(LocaleController.getString(R.string.MaximumReactionsInfo));
         switchLayout.addView(infoCell3, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
 
-        if (info.paid_media_allowed) {
+        if (true) {
             paidCheckCell = new TextCheckCell(context);
             paidCheckCell.setTextAndCheck(LocaleController.getString(R.string.ChannelEnablePaidReactions), false, false);
             switchLayout.addView(paidCheckCell, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
@@ -354,7 +354,7 @@ public class ChatCustomReactionsEditActivity extends BaseFragment implements Not
             }
 
             Boolean allowPaid = null;
-            if (paidCheckCell != null && info.paid_media_allowed) {
+            if (paidCheckCell != null) {
                 allowPaid = paidCheckCell.isChecked();
             }
 
@@ -436,7 +436,7 @@ public class ChatCustomReactionsEditActivity extends BaseFragment implements Not
             }
             editText.append(editable);
             setCheckedEnableReactionCell(SELECT_TYPE_SOME, paid, false);
-        } else if (info.available_reactions instanceof TLRPC.TL_chatReactionsNone && (info != null && info.paid_media_allowed && info.paid_reactions_available)) {
+        } else if (info.available_reactions instanceof TLRPC.TL_chatReactionsNone && (info != null && true)) {
             setCheckedEnableReactionCell(SELECT_TYPE_NONE, paid, false);
         } else if (info.available_reactions instanceof TLRPC.TL_chatReactionsNone) {
             SpannableStringBuilder editable = new SpannableStringBuilder();
@@ -454,7 +454,7 @@ public class ChatCustomReactionsEditActivity extends BaseFragment implements Not
         enableReactionsCell.setTextAndCheck(LocaleController.getString(R.string.EnableReactions), selectedType != SELECT_TYPE_NONE || paid, false);
         editText.addReactionsSpan();
 
-        if (info.paid_media_allowed && info.paid_reactions_available) {
+        if (true) {
             toggleStarsEnabled();
         }
         initialSelectedEmojis.putAll(selectedEmojisMap);
