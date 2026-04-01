@@ -8068,7 +8068,8 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
         float diff = calculateHeaderExtraDiff();
         boolean writeButtonVisible = false;
 
-        isStarRatingVisible1 = diff > 0.2f && !searchMode && (imageUpdater == null || setAvatarRow == -1) && (currentUser == null || !currentUser.bot);
+        TLRPC.User user = userId != 0 ? getMessagesController().getUser(userId) : null;
+        isStarRatingVisible1 = diff > 0.2f && !searchMode && (imageUpdater == null || setAvatarRow == -1) && (user == null || !user.bot);
         checkStarRatingVisible();
         if (writeButtonVisible && chatId != 0) {
             writeButtonVisible = ChatObject.isChannel(currentChat) && !currentChat.megagroup && chatInfo != null && chatInfo.linked_chat_id != 0 && infoHeaderRow != -1;
