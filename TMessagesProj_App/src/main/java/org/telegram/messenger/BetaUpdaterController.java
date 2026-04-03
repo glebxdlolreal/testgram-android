@@ -97,6 +97,8 @@ public class BetaUpdaterController {
     public void checkForUpdate(boolean force, Runnable whenDone) {
         if (checkingForUpdate) return;
 
+        final boolean isManualCheck = force && !firstCheck; // Manual check only if force=true and not first check
+
         if (firstCheck) {
             force = true;
         }
@@ -108,7 +110,6 @@ public class BetaUpdaterController {
         }
 
         final String url = org.telegram.messenger.BuildConfig.BETA_URL;
-        final boolean isManualCheck = force;
         checkingForUpdate = true;
         firstCheck = false;
 
