@@ -3961,12 +3961,13 @@ public class TLRPC {
     }
 
     public static class TL_inputStickerSetItem extends TLObject {
-        public static final int constructor = 0xffa0a496;
+        public static final int constructor = 0x32da9e9c;
 
         public int flags;
         public InputDocument document;
         public String emoji;
         public TL_maskCoords mask_coords;
+        public String keywords;
 
         public static TL_inputStickerSetItem TLdeserialize(InputSerializedData stream, int constructor, boolean exception) {
             final TL_inputStickerSetItem result = TL_inputStickerSetItem.constructor != constructor ? null : new TL_inputStickerSetItem();
@@ -3980,6 +3981,9 @@ public class TLRPC {
             if ((flags & 1) != 0) {
                 mask_coords = TL_maskCoords.TLdeserialize(stream, stream.readInt32(exception), exception);
             }
+            if ((flags & 2) != 0) {
+                keywords = stream.readString(exception);
+            }
         }
 
         public void serializeToStream(OutputSerializedData stream) {
@@ -3989,6 +3993,9 @@ public class TLRPC {
             stream.writeString(emoji);
             if ((flags & 1) != 0) {
                 mask_coords.serializeToStream(stream);
+            }
+            if ((flags & 2) != 0) {
+                stream.writeString(keywords);
             }
         }
     }
