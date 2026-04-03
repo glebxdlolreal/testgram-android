@@ -597,8 +597,7 @@ public class DialogStoriesCell extends FrameLayout implements NotificationCenter
         boolean hidden = type == TYPE_ARCHIVE;
         totalCount = Math.max(1, Math.max(storiesController.getTotalStoriesCount(hidden), size));
 
-        // FIXED: Always use AppName instead of showing telegram logo when currentTitle is null
-        currentTitle = menuItemsOffset < dp(50) ? LocaleController.getString(R.string.AppName) : null;
+        // FIXED: Don't set currentTitle to null - always use text
         if (storiesController.hasOnlySelfStories()) {
             if (storiesController.hasUploadingStories(UserConfig.getInstance(currentAccount).getClientUserId())) {
                 String str = LocaleController.getString(R.string.UploadingStory);
