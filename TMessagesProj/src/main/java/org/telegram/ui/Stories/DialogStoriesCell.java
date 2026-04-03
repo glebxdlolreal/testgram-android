@@ -1260,8 +1260,13 @@ public class DialogStoriesCell extends FrameLayout implements NotificationCenter
         } else {
             hasOverlayText = false;
             overlayTextId = 0;
-            // FIXED: If currentTitle is null, use AppName instead of showing telegram logo
-            CharSequence titleToSet = currentTitle != null ? currentTitle : LocaleController.getString(R.string.AppName);
+            // FIXED: Always show AppName when menu is collapsed, otherwise use currentTitle
+            CharSequence titleToSet;
+            if (menuItemsOffset < dp(50)) {
+                titleToSet = LocaleController.getString(R.string.AppName);
+            } else {
+                titleToSet = currentTitle != null ? currentTitle : LocaleController.getString(R.string.AppName);
+            }
             titleView.setText(titleToSet, !LocaleController.isRTL);
         }
 
