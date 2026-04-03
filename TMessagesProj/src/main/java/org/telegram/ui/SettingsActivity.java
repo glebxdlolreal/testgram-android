@@ -1449,6 +1449,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
             } else if (which == 8) { // ?
                 SharedConfig.toggleRoundCamera16to9();
             } else if (which == 9) { // Check app update
+                Toast.makeText(getParentActivity(), "Checking for updates...", Toast.LENGTH_SHORT).show();
                 ((LaunchActivity) getParentActivity()).checkAppUpdate(true, null);
             } else if (which == 10) { // Read all chats
                 getMessagesStorage().readAllDialogs(-1);

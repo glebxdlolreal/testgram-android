@@ -108,8 +108,16 @@ public class BetaUpdaterController {
         }
 
         final String url = org.telegram.messenger.BuildConfig.BETA_URL;
+        final boolean isManualCheck = force;
         checkingForUpdate = true;
         firstCheck = false;
+
+        if (isManualCheck) {
+            FileLog.d("BetaUpdater: Manual update check requested");
+            FileLog.d("BetaUpdater: Current version: " + getCurrentVersion() + " (" + getCurrentVersionCode() + ")");
+            FileLog.d("BetaUpdater: Checking URL: " + url);
+        }
+
         new HttpGetTask(str -> AndroidUtilities.runOnUIThread(() -> {
             checkingForUpdate = false;
             try {
@@ -118,6 +126,11 @@ public class BetaUpdaterController {
                 final int newVersionCode = json.getInt("version_code");
                 final String fileUrl = json.getString("file_url");
                 final String changelog = json.optString("changelog", null);
+
+                if (isManualCheck) {
+                    FileLog.d("BetaUpdater: Remote version: " + newVersion + " (" + newVersionCode + ")");
+                    FileLog.d("BetaUpdater: File URL: " + fileUrl);
+                }
 
                 final int oldVersionCode = this.versionCode;
 
@@ -187,7 +200,11 @@ public class BetaUpdaterController {
                     }
                 }
             } catch (Exception e) {
-                FileLog.e("Failed to check for beta update at " + url + " received: " + str, e);
+                FileLog.e("BetaUpdater: Failed to check for update at " + url, e);
+                FileLog.e("BetaUpdater: Response received: " + str);
+                if (whenDone != null) {
+                    whenDone.run();
+                }
             }
         })).execute(url);
     }
