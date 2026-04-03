@@ -184,20 +184,32 @@ public class BetaUpdaterController {
                 this.lastCheck = System.currentTimeMillis();
                 save();
 
-                if (this.versionCode != oldVersionCode) {
+                final boolean hasNewUpdate = this.versionCode != oldVersionCode;
+
+                if (hasNewUpdate) {
                     NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.appUpdateAvailable);
                 }
 
                 AndroidUtilities.cancelRunOnUIThread(this.scheduledUpdateCheck);
                 AndroidUtilities.runOnUIThread(this.scheduledUpdateCheck, BuildVars.DEBUG_PRIVATE_VERSION ? CHECK_INTERVAL_PRIVATE : CHECK_INTERVAL);
+
                 if (whenDone != null) {
                     whenDone.run();
-                } else if (this.versionCode != oldVersionCode && !ApplicationLoader.mainInterfacePaused) {
+                } else if (hasNewUpdate && !ApplicationLoader.mainInterfacePaused) {
                     final Context context = LaunchActivity.instance != null ? LaunchActivity.instance : ApplicationLoader.applicationContext;
                     final BetaUpdate pendingUpdate = getUpdate();
                     if (context != null && pendingUpdate != null) {
                         ApplicationLoader.applicationLoaderInstance.showCustomUpdateAppPopup(context, pendingUpdate, UserConfig.selectedAccount);
                     }
+                }
+
+                // Show "no updates" message for manual checks
+                if (isManualCheck && !hasNewUpdate) {
+                    AndroidUtilities.runOnUIThread(() -> {
+                        if (LaunchActivity.instance != null) {
+                            android.widget.Toast.makeText(LaunchActivity.instance, "No updates available. You have the latest version.", android.widget.Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
             } catch (Exception e) {
                 FileLog.e("BetaUpdater: Failed to check for update at " + url, e);
