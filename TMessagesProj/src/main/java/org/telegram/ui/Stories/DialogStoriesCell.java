@@ -337,6 +337,11 @@ public class DialogStoriesCell extends FrameLayout implements NotificationCenter
         emojiStatusView = new ImageView(context);
         emojiStatusView.setScaleType(ImageView.ScaleType.CENTER);
         emojiStatusView.setImageDrawable(statusDrawable);
+        emojiStatusView.setOnClickListener(v -> {
+            if (fragment instanceof org.telegram.ui.DialogsActivity) {
+                ((org.telegram.ui.DialogsActivity) fragment).showSelectStatusDialog();
+            }
+        });
         addView(emojiStatusView, LayoutHelper.createFrame(40, 40));
 
         subtitleOverlayContainer = new ActionBarAnimatedSubtitleOverlayContainer(context, null, ellipsizeSpanAnimator) {
