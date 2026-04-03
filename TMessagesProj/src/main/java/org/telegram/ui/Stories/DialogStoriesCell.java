@@ -597,7 +597,8 @@ public class DialogStoriesCell extends FrameLayout implements NotificationCenter
         boolean hidden = type == TYPE_ARCHIVE;
         totalCount = Math.max(1, Math.max(storiesController.getTotalStoriesCount(hidden), size));
 
-        currentTitle = null;
+        // FIXED: Always use AppName instead of showing telegram logo when currentTitle is null
+        currentTitle = menuItemsOffset < dp(50) ? LocaleController.getString(R.string.AppName) : null;
         if (storiesController.hasOnlySelfStories()) {
             if (storiesController.hasUploadingStories(UserConfig.getInstance(currentAccount).getClientUserId())) {
                 String str = LocaleController.getString(R.string.UploadingStory);
@@ -615,11 +616,11 @@ public class DialogStoriesCell extends FrameLayout implements NotificationCenter
                     currentTitle = str;
                 }
             } else {
-                currentTitle = menuItemsOffset < dp(50) ? null :
+                currentTitle = menuItemsOffset < dp(50) ? LocaleController.getString(R.string.AppName) :
                     LocaleController.getString(R.string.MyStory);
             }
         } else {
-            currentTitle = menuItemsOffset < dp(50) ? null :
+            currentTitle = menuItemsOffset < dp(50) ? LocaleController.getString(R.string.AppName) :
                 LocaleController.formatPluralString("Stories", totalCount);
         }
 
@@ -1255,7 +1256,9 @@ public class DialogStoriesCell extends FrameLayout implements NotificationCenter
         } else {
             hasOverlayText = false;
             overlayTextId = 0;
-            titleView.setText(currentTitle, !LocaleController.isRTL);
+            // FIXED: If currentTitle is null, use AppName instead of showing telegram logo
+            CharSequence titleToSet = currentTitle != null ? currentTitle : LocaleController.getString(R.string.AppName);
+            titleView.setText(titleToSet, !LocaleController.isRTL);
         }
 
         animatorHasTitleText.setValue(hasOverlayText, true);
@@ -1562,10 +1565,16 @@ public class DialogStoriesCell extends FrameLayout implements NotificationCenter
                     textView.setText(LocaleController.getString(R.string.MyStory));
                 } else if (user != null) {
                     textView.setTextSize(11);
-                    String name = user.first_name == null ? "" : user.first_name.trim();
-                    int index = name.indexOf(" ");
-                    if (index > 0) {
-                        name = name.substring(0, index);
+                    String name;
+                    if (user.id == UserConfig.getInstance(currentAccount).getClientUserId()) {
+                        // For current user, show app name instead of first_name
+                        name = LocaleController.getString(R.string.AppName);
+                    } else {
+                        name = user.first_name == null ? "" : user.first_name.trim();
+                        int index = name.indexOf(" ");
+                        if (index > 0) {
+                            name = name.substring(0, index);
+                        }
                     }
                     if (user.verified) {
                         if (verifiedDrawable == null) {
@@ -2173,8 +2182,8 @@ public class DialogStoriesCell extends FrameLayout implements NotificationCenter
             telegramLogoView.setVisibility(logoAlpha > 0 ? VISIBLE : GONE);
         }
         if (emojiStatusView != null) {
-            emojiStatusView.setAlpha(logoAlpha);
-            emojiStatusView.setVisibility(logoAlpha > 0 ? VISIBLE : GONE);
+            emojiStatusView.setAlpha(1f);
+            emojiStatusView.setVisibility(VISIBLE);
         }
         if (subtitleOverlayContainer != null) {
             subtitleOverlayContainer.setAlpha(progress);
