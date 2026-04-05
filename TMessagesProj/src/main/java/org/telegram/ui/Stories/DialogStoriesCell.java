@@ -927,7 +927,8 @@ public class DialogStoriesCell extends FrameLayout implements NotificationCenter
             telegramLogoView.setTranslationX(titleView.getTranslationX() + dp(1));
             telegramLogoView.setTranslationY(bottomY + dp(14 + FAKE_TOP_PADDING + 4.333f) + translationOffset /*titleView.getTranslationY() + dpf2(37.33f)*/);
 
-            emojiStatusView.setTranslationX(titleView.getTranslationX() - dpf2(3.33f) + telegramLogoView.getMeasuredWidth());
+            // FIXED: Position emoji status relative to title text width, not logo width (since logo is hidden)
+            emojiStatusView.setTranslationX(titleView.getTranslationX() + titleView.getDrawable().getWidth() + dp(4));
             emojiStatusView.setTranslationY(bottomY + dp(14 - 11 + FAKE_TOP_PADDING + 4.333f) + translationOffset);
 
             subtitleOverlayContainer.setTranslationX(titleView.getTranslationX());
@@ -2178,8 +2179,9 @@ public class DialogStoriesCell extends FrameLayout implements NotificationCenter
     private void checkUi_titleVisibility() {
         final float progress = MathUtils.clamp(Math.min(collapsedProgress, collapsedProgress2), 0, 1);
         final float titleVisibility = animatorHasTitleText.getFloatValue();
-        final float logoVisibility = 1f - titleVisibility;
-        final float titleAlpha = titleVisibility * progress;
+        final float logoVisibility = 0f; // FIXED: Never show Telegram logo, always show text
+        // FIXED: Always show title text (even when overlay is shown), never show logo
+        final float titleAlpha = progress; // Always visible when expanded
         final float logoAlpha = logoVisibility * progress;
 
         if (titleView != null) {
@@ -2191,8 +2193,10 @@ public class DialogStoriesCell extends FrameLayout implements NotificationCenter
             telegramLogoView.setVisibility(logoAlpha > 0 ? VISIBLE : GONE);
         }
         if (emojiStatusView != null) {
-            emojiStatusView.setAlpha(1f);
-            emojiStatusView.setVisibility(VISIBLE);
+            // FIXED: Show emoji status only when title is visible
+            float emojiAlpha = titleAlpha;
+            emojiStatusView.setAlpha(emojiAlpha);
+            emojiStatusView.setVisibility(emojiAlpha > 0 ? VISIBLE : GONE);
         }
         if (subtitleOverlayContainer != null) {
             subtitleOverlayContainer.setAlpha(progress);
