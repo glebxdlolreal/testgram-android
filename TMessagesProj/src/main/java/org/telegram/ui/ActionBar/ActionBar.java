@@ -1543,6 +1543,14 @@ public class ActionBar extends FrameLayout implements Theme.Colorable {
 
 
         CharSequence textToSet = title != null ? LocaleController.getString(title, titleId) : lastTitle;
+        // FIXED: When overlay is removed, refresh lastTitle from AppName to prevent showing cached "Telegram"
+        if (title == null && lastTitle != null && parentFragment != null) {
+            CharSequence currentAppName = LocaleController.getString(R.string.AppName);
+            if (!lastTitle.equals(currentAppName)) {
+                lastTitle = currentAppName;
+                textToSet = lastTitle;
+            }
+        }
         Drawable rightDrawableToSet = title != null ? null : lastRightDrawable;
         boolean ellipsize = false;
         if (title != null) {
