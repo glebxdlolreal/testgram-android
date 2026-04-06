@@ -518,6 +518,7 @@ public class GiftSheet extends BottomSheetWithRecyclerListView implements Notifi
                         final BaseFragment.BottomSheetParams bottomSheetParams = new BaseFragment.BottomSheetParams();
                         bottomSheetParams.transitionFromLeft = true;
                         bottomSheetParams.allowNestedScroll = false;
+                        bottomSheetParams.occupyNavigationBar = true;
 
                         ViewTreeObserver observer = container.getViewTreeObserver();
                         ViewTreeObserver.OnPreDrawListener onPreDrawListener = () -> false;
@@ -1836,11 +1837,11 @@ public class GiftSheet extends BottomSheetWithRecyclerListView implements Notifi
                         ribbon.setColor(Theme.getColor(Theme.key_gift_ribbon, resourcesProvider));
                         ribbon.setStrokeColor(0);
                         ribbon.setBackdrop(findAttribute(userGift.gift.attributes, TL_stars.starGiftAttributeBackdrop.class));
-                        if (pinned) {
+//                        if (pinned) {
                             ribbon.setText("#" + LocaleController.formatNumber(userGift.gift.num, ','), true);
-                        } else {
-                            ribbon.setText(formatString(R.string.Gift2Limited1OfRibbon, AndroidUtilities.formatWholeNumber(userGift.gift.availability_issued, 0)), true);
-                        }
+//                        } else {
+//                            ribbon.setText(formatString(R.string.Gift2Limited1OfRibbon, AndroidUtilities.formatWholeNumber(userGift.gift.availability_issued, 0)), true);
+//                        }
                     }
                 } else if (userGift.gift.limited) {
                     ribbon.setVisibility(View.VISIBLE);
