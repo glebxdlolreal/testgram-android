@@ -1624,7 +1624,7 @@ public class MessagesController extends BaseController implements NotificationCe
         verifyAgeMin = mainPreferences.getInt("verifyAgeMin", 18);
         premiumBotUsername = mainPreferences.getString("premiumBotUsername", null);
         premiumLocked = mainPreferences.getBoolean("premiumLocked", false);
-        starsLocked = mainPreferences.getBoolean("starsLocked", false);
+        starsLocked = mainPreferences.getBoolean("starsLocked", true);
         transcribeButtonPressed = mainPreferences.getInt("transcribeButtonPressed", 0);
         forumUpgradeParticipantsMin = mainPreferences.getInt("forumUpgradeParticipantsMin", 200);
         topicsPinnedLimit = mainPreferences.getInt("topicsPinnedLimit", 3);
@@ -2819,7 +2819,13 @@ public class MessagesController extends BaseController implements NotificationCe
                     break;
                 }
                 case "stars_purchase_blocked": {
-                    // always false on testgram
+                    if (value.value instanceof TLRPC.TL_jsonBool) {
+                        if (starsLocked != ((TLRPC.TL_jsonBool) value.value).value) {
+                            starsLocked = ((TLRPC.TL_jsonBool) value.value).value;
+                            editor.putBoolean("starsLocked", starsLocked);
+                            changed = true;
+                        }
+                    }
                     break;
                 }
                 case "premium_bot_username": {
@@ -5569,7 +5575,7 @@ public class MessagesController extends BaseController implements NotificationCe
         smsjobsStickyNotificationEnabled = false;
         showAnnualPerMonth = false;
         canEditFactcheck = false;
-        starsLocked = false;
+        starsLocked = true;
         factcheckLengthLimit = 1024;
         videoIgnoreAltDocuments = false;
         freezeSinceDate = 0L;
